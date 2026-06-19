@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FormAI — Créez votre Google Form en 1 minute</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="hero">
+        <nav class="nav" aria-label="Navigation principale">
+          <div class="brand" aria-label="FormAI">
+            <span class="brand-mark">F</span>
+            <span>FormAI</span>
+          </div>
+          <button class="nav-link" id="connect-google" type="button">Se connecter avec Google</button>
+        </nav>
+
+        <section class="hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Assistant Google Forms</span>
+            <h1>Décrivez votre formulaire. FormAI le crée pour vous.</h1>
+            <p>
+              Connectez votre compte Google, expliquez le formulaire dont vous avez besoin, puis FormAI
+              génère un vrai Google Form dans votre Drive et vous y redirige automatiquement.
+            </p>
+            <div class="hero-actions">
+              <button class="button primary" id="hero-connect" type="button">Continuer avec Google</button>
+              <a class="button secondary" href="#create">Décrire mon besoin</a>
+            </div>
+          </div>
+
+          <aside class="trust-card" aria-label="Bénéfices FormAI">
+            <p class="trust-label">Pensé pour les vrais usages</p>
+            <ul>
+              <li>Formulaires d’inscription</li>
+              <li>Sondages de satisfaction</li>
+              <li>Questionnaires événementiels</li>
+            </ul>
+          </aside>
+        </section>
+      </header>
+
+      <main id="create" class="creator-card">
+        <section class="auth-strip" aria-live="polite">
+          <div>
+            <span class="auth-status" id="auth-status">Non connecté</span>
+            <h2>Créez votre formulaire</h2>
+            <p id="auth-helper">Connectez-vous avec Google pour créer le formulaire directement dans votre Drive.</p>
+          </div>
+          <button class="button ghost" id="auth-action" type="button">Se connecter</button>
+        </section>
+
+        <section class="form-area" aria-labelledby="description-title">
+          <label class="field">
+            <span id="description-title">Que voulez-vous créer ?</span>
+            <textarea
+              id="description"
+              rows="9"
+              placeholder="Exemple : Crée un formulaire d’inscription pour un atelier marketing avec nom, email, entreprise, niveau, choix de créneau et questions ouvertes."
+            ></textarea>
+          </label>
+
+          <div class="prompt-tools" aria-label="Exemples de formulaires">
+            <button class="chip" type="button" data-template="inscription">Inscription</button>
+            <button class="chip" type="button" data-template="satisfaction">Satisfaction</button>
+            <button class="chip" type="button" data-template="evenement">Événement</button>
+          </div>
+
+          <button class="button primary generate" id="generate-form" type="button">
+            <span class="button-label">Créer mon formulaire</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+
+          <p class="privacy-note">
+            FormAI utilise uniquement les autorisations nécessaires pour créer et ouvrir le formulaire dans votre compte Google.
+          </p>
+        </section>
+
+        <section id="message-card" class="message-card hidden" role="status"></section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
