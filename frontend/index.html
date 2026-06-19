@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FormAI</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" aria-labelledby="title">
+        <p class="brand">FormAI</p>
+        <h1 id="title">Créer un Google Form</h1>
+        <p class="subtitle">Connectez-vous, décrivez votre besoin, puis ouvrez le formulaire généré.</p>
+
+        <button id="connect-google" class="button secondary" type="button">Se connecter avec Google</button>
+        <p id="auth-status" class="status">Non connecté</p>
+
+        <label class="field" for="description">Description</label>
+        <textarea
+          id="description"
+          rows="7"
+          placeholder="Exemple : Formulaire d’inscription pour un atelier avec nom, email, créneau préféré et commentaires."
+        ></textarea>
+
+        <button id="generate-form" class="button primary" type="button">
+          <span class="button-label">Créer le formulaire</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+
+        <p id="message" class="message hidden" role="status"></p>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
