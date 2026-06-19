@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FormAI Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="hero">
+        <nav class="nav" aria-label="Navigation principale">
+          <div class="brand" aria-label="FormAI Studio">
+            <span class="brand-mark">F</span>
+            <span>FormAI Studio</span>
+          </div>
+          <a class="nav-link" href="#generator">Créer un formulaire</a>
+        </nav>
+
+        <section class="hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Google Forms généré par IA</span>
+            <h1>Transformez une idée en formulaire Google prêt à partager.</h1>
+            <p>
+              Décrivez votre besoin, connectez Google, puis laissez FormAI générer la structure,
+              créer le formulaire et vous retourner les liens d’édition et de réponse.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#generator">Démarrer</a>
+              <button class="button secondary" id="fill-demo" type="button">Exemple rapide</button>
+            </div>
+          </div>
+
+          <aside class="status-card" aria-label="Résumé du flux">
+            <div class="status-row done"><span></span>OAuth Google</div>
+            <div class="status-row done"><span></span>Gemini JSON validé</div>
+            <div class="status-row"><span></span>Google Forms publié</div>
+            <div class="card-divider"></div>
+            <p>Scope minimal côté API : Forms, Drive file et email pour identifier l’utilisateur MVP.</p>
+          </aside>
+        </section>
+      </header>
+
+      <main id="generator" class="workspace">
+        <section class="panel setup-panel" aria-labelledby="setup-title">
+          <div class="panel-heading">
+            <span class="step">01</span>
+            <div>
+              <h2 id="setup-title">Connexion API</h2>
+              <p>Configurez l’URL backend et l’utilisateur Google autorisé.</p>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>URL de l’API</span>
+            <input id="api-base-url" type="url" value="http://localhost:3000" autocomplete="url" />
+          </label>
+
+          <label class="field">
+            <span>User ID Google</span>
+            <input id="user-id" type="email" placeholder="vous@example.com" autocomplete="email" />
+          </label>
+
+          <div class="button-row">
+            <button class="button secondary full" id="save-settings" type="button">Sauvegarder</button>
+            <button class="button ghost full" id="connect-google" type="button">Connecter Google</button>
+          </div>
+
+          <p class="hint">
+            Après OAuth, copiez l’email retourné par l’API dans le champ User ID. En mode mock backend,
+            n’importe quel identifiant est accepté.
+          </p>
+        </section>
+
+        <section class="panel generator-panel" aria-labelledby="generator-title">
+          <div class="panel-heading">
+            <span class="step">02</span>
+            <div>
+              <h2 id="generator-title">Description du formulaire</h2>
+              <p>Rédigez une demande claire : public, objectif, champs attendus, contraintes.</p>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>Prompt</span>
+            <textarea id="description" rows="10" placeholder="Crée un formulaire d’inscription pour un atelier TypeScript..."></textarea>
+          </label>
+
+          <div class="prompt-tools">
+            <button class="chip" type="button" data-template="inscription">Inscription</button>
+            <button class="chip" type="button" data-template="satisfaction">Satisfaction</button>
+            <button class="chip" type="button" data-template="evenement">Événement</button>
+          </div>
+
+          <button class="button primary generate" id="generate-form" type="button">
+            <span class="button-label">Générer le Google Form</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+        </section>
+
+        <section class="panel result-panel" aria-live="polite" aria-labelledby="result-title">
+          <div class="panel-heading">
+            <span class="step">03</span>
+            <div>
+              <h2 id="result-title">Résultat</h2>
+              <p>Les liens apparaîtront ici après génération.</p>
+            </div>
+          </div>
+
+          <div id="empty-state" class="empty-state">
+            <div class="empty-icon">✦</div>
+            <p>Votre formulaire généré s’affichera ici.</p>
+          </div>
+
+          <div id="result-card" class="result-card hidden">
+            <span class="success-badge">Formulaire créé</span>
+            <h3 id="result-title-value"></h3>
+            <div class="link-list">
+              <a id="edit-link" target="_blank" rel="noreferrer">Ouvrir l’édition</a>
+              <a id="form-link" target="_blank" rel="noreferrer">Ouvrir le formulaire public</a>
+            </div>
+          </div>
+
+          <div id="error-card" class="error-card hidden" role="alert"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
