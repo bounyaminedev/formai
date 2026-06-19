@@ -1,6 +1,7 @@
-# FormAI Studio Frontend
+# FormAI Frontend
 
-Interface web statique et professionnelle qui consomme l’API backend FormAI.
+Site web public qui consomme l’API FormAI et propose un flow utilisateur simple :
+connexion Google, description du besoin, création du formulaire, puis redirection vers Google Forms.
 
 ## Lancer localement
 
@@ -12,16 +13,22 @@ python3 -m http.server 5173 -d frontend
 
 Puis ouvrir `http://localhost:5173`.
 
-## Utilisation
+## Configuration attendue côté backend
 
-1. Lancer l’API backend sur `http://localhost:3000`.
-2. Optionnel pour un test sans Google/Gemini : mettre `MOCK_EXTERNAL_APIS=true` dans le `.env` backend.
-3. Renseigner l’URL de l’API dans l’interface.
-4. Cliquer sur **Connecter Google** si le backend est en mode réel, puis copier l’email retourné comme User ID.
-5. Décrire le formulaire et cliquer sur **Générer le Google Form**.
+Dans `.env` backend :
 
-## Notes UX
+```bash
+FRONTEND_URL=http://localhost:5173
+GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
+```
 
-- Les paramètres API/User ID sont persistés dans `localStorage`.
-- Les exemples rapides remplissent automatiquement le prompt.
-- Les erreurs API sont affichées sans exposer de token ou secret.
+En production, `FRONTEND_URL` doit pointer vers le domaine public du site.
+
+## Flow utilisateur
+
+1. L’utilisateur clique sur **Continuer avec Google**.
+2. Google renvoie vers le callback backend.
+3. Le backend stocke les tokens puis redirige vers le frontend avec l’utilisateur connecté.
+4. L’utilisateur décrit son formulaire.
+5. Le frontend appelle `POST /forms/generate`.
+6. À la création, l’utilisateur est redirigé vers le Google Form généré.

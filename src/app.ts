@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
-import pinoHttp from 'pino-http';
+import { pinoHttp } from 'pino-http';
 import { authRoutes } from './routes/authRoutes.js';
 import { formsRoutes } from './routes/formsRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';

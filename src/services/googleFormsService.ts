@@ -95,7 +95,7 @@ export async function createGoogleForm(auth: OAuth2Client | null, structure: Gen
   }
 
   // Required for Forms created via API after 2026-06-30 per Google Forms API changes.
-  await forms.forms.setPublishSettings({
+  await (forms.forms as forms_v1.Resource$Forms & { setPublishSettings: (params: unknown) => Promise<unknown> }).setPublishSettings({
     formId,
     requestBody: {
       publishSettings: {

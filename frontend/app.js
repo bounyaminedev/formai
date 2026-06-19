@@ -1,44 +1,58 @@
+const API_BASE_URL = window.FORMAI_API_BASE_URL || 'http://localhost:3000';
+
 const templates = {
   inscription:
-    'Crée un formulaire d’inscription pour un atelier TypeScript avec nom, email, niveau actuel, préférences horaires, besoins particuliers et commentaires libres.',
+    'Crée un formulaire d’inscription professionnel pour un atelier TypeScript avec nom, email, entreprise, niveau actuel, choix de créneau, besoins particuliers et commentaires libres.',
   satisfaction:
-    'Crée un sondage de satisfaction client après achat avec note globale, qualité du produit, expérience de livraison, probabilité de recommandation et suggestions.',
+    'Crée un sondage de satisfaction client clair avec note globale, qualité du service, rapidité, probabilité de recommandation, points forts et axes d’amélioration.',
   evenement:
-    'Crée un questionnaire pour organiser un événement d’équipe avec disponibilités, régime alimentaire, activité préférée, taille de groupe et remarques logistiques.',
+    'Crée un questionnaire pour organiser un événement d’équipe avec disponibilités, régime alimentaire, activité préférée, contraintes de transport et remarques logistiques.',
 };
 
 const elements = {
-  apiBaseUrl: document.querySelector('#api-base-url'),
-  userId: document.querySelector('#user-id'),
-  description: document.querySelector('#description'),
-  saveSettings: document.querySelector('#save-settings'),
   connectGoogle: document.querySelector('#connect-google'),
-  fillDemo: document.querySelector('#fill-demo'),
+  heroConnect: document.querySelector('#hero-connect'),
+  authAction: document.querySelector('#auth-action'),
+  authStatus: document.querySelector('#auth-status'),
+  authHelper: document.querySelector('#auth-helper'),
+  description: document.querySelector('#description'),
   generateForm: document.querySelector('#generate-form'),
-  resultCard: document.querySelector('#result-card'),
-  emptyState: document.querySelector('#empty-state'),
-  errorCard: document.querySelector('#error-card'),
-  titleValue: document.querySelector('#result-title-value'),
-  editLink: document.querySelector('#edit-link'),
-  formLink: document.querySelector('#form-link'),
-  toast: document.querySelector('#toast'),
+  messageCard: document.querySelector('#message-card'),
 };
 
-function loadSettings() {
-  elements.apiBaseUrl.value = localStorage.getItem('formai.apiBaseUrl') || elements.apiBaseUrl.value;
-  elements.userId.value = localStorage.getItem('formai.userId') || '';
+let currentUserId = localStorage.getItem('formai.userId') || '';
+
+function readAuthCallback() {
+  const params = new URLSearchParams(window.location.search);
+  const auth = params.get('auth');
+  const userId = params.get('userId');
+  const message = params.get('message');
+
+  if (auth === 'success' && userId) {
+    currentUserId = userId;
+    localStorage.setItem('formai.userId', userId);
+    window.history.replaceState({}, document.title, window.location.pathname);
+    showMessage('Vous êtes connecté. Décrivez maintenant le formulaire à créer.', 'success');
+  }
+
+  if (auth === 'error') {
+    window.history.replaceState({}, document.title, window.location.pathname);
+    showMessage(`Connexion Google interrompue : ${message || 'autorisation refusée'}.`, 'error');
+  }
 }
 
-function saveSettings() {
-  localStorage.setItem('formai.apiBaseUrl', elements.apiBaseUrl.value.trim());
-  localStorage.setItem('formai.userId', elements.userId.value.trim());
-  showToast('Paramètres sauvegardés.');
+function updateAuthUi() {
+  const isConnected = Boolean(currentUserId);
+  elements.authStatus.textContent = isConnected ? 'Connecté avec Google' : 'Non connecté';
+  elements.authStatus.classList.toggle('connected', isConnected);
+  elements.authHelper.textContent = isConnected
+    ? `Votre formulaire sera créé dans le Drive de ${currentUserId}.`
+    : 'Connectez-vous avec Google pour créer le formulaire directement dans votre Drive.';
+  elements.authAction.textContent = isConnected ? 'Changer de compte' : 'Se connecter';
 }
 
-function showToast(message) {
-  elements.toast.textContent = message;
-  elements.toast.classList.remove('hidden');
-  window.setTimeout(() => elements.toast.classList.add('hidden'), 2800);
+function connectGoogle() {
+  window.location.href = `${API_BASE_URL}/auth/google`;
 }
 
 function setTemplate(name) {
@@ -46,84 +60,71 @@ function setTemplate(name) {
   elements.description.focus();
 }
 
+function showMessage(message, type = 'info') {
+  elements.messageCard.textContent = message;
+  elements.messageCard.className = `message-card ${type}`;
+}
+
+function clearMessage() {
+  elements.messageCard.className = 'message-card hidden';
+  elements.messageCard.textContent = '';
+}
+
 function setLoading(isLoading) {
   elements.generateForm.disabled = isLoading;
   elements.generateForm.classList.toggle('loading', isLoading);
   elements.generateForm.querySelector('.button-label').textContent = isLoading
-    ? 'Génération en cours…'
-    : 'Générer le Google Form';
-}
-
-function showError(message) {
-  elements.errorCard.textContent = message;
-  elements.errorCard.classList.remove('hidden');
-}
-
-function clearResult() {
-  elements.errorCard.classList.add('hidden');
-  elements.resultCard.classList.add('hidden');
-  elements.emptyState.classList.remove('hidden');
-}
-
-function showResult(result) {
-  elements.titleValue.textContent = result.title || 'Formulaire généré';
-  elements.editLink.href = result.editUrl;
-  elements.formLink.href = result.formUrl;
-  elements.emptyState.classList.add('hidden');
-  elements.errorCard.classList.add('hidden');
-  elements.resultCard.classList.remove('hidden');
+    ? 'Création du formulaire…'
+    : 'Créer mon formulaire';
 }
 
 async function generateForm() {
-  const apiBaseUrl = elements.apiBaseUrl.value.trim().replace(/\/$/, '');
-  const userId = elements.userId.value.trim();
-  const description = elements.description.value.trim();
+  clearMessage();
 
-  clearResult();
-
-  if (!apiBaseUrl || !userId || description.length < 10) {
-    showError('Renseignez une URL API, un User ID et une description d’au moins 10 caractères.');
+  if (!currentUserId) {
+    showMessage('Connectez-vous avec Google avant de créer votre formulaire.', 'error');
     return;
   }
 
-  saveSettings();
+  const description = elements.description.value.trim();
+  if (description.length < 10) {
+    showMessage('Décrivez votre besoin en quelques mots supplémentaires.', 'error');
+    return;
+  }
+
   setLoading(true);
+  showMessage('FormAI prépare votre formulaire. Vous serez redirigé automatiquement dès qu’il sera prêt.', 'info');
 
   try {
-    const response = await fetch(`${apiBaseUrl}/forms/generate`, {
+    const response = await fetch(`${API_BASE_URL}/forms/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, description }),
+      body: JSON.stringify({ userId: currentUserId, description }),
     });
 
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
-      throw new Error(payload.error || `Erreur API (${response.status})`);
+      throw new Error(payload.error || `Impossible de créer le formulaire (${response.status}).`);
     }
 
-    showResult(payload);
-    showToast('Formulaire créé avec succès.');
+    const destination = payload.editUrl || payload.formUrl;
+    if (!destination) {
+      throw new Error('Le formulaire a été créé, mais aucun lien Google Forms n’a été retourné.');
+    }
+
+    showMessage('Formulaire créé. Redirection vers Google Forms…', 'success');
+    window.location.href = destination;
   } catch (error) {
-    showError(error instanceof Error ? error.message : 'Erreur inconnue pendant la génération.');
-  } finally {
+    showMessage(error instanceof Error ? error.message : 'Une erreur inattendue est survenue.', 'error');
     setLoading(false);
   }
 }
 
-function connectGoogle() {
-  const apiBaseUrl = elements.apiBaseUrl.value.trim().replace(/\/$/, '');
-  if (!apiBaseUrl) {
-    showError('Renseignez d’abord l’URL de l’API.');
-    return;
-  }
-  saveSettings();
-  window.open(`${apiBaseUrl}/auth/google`, '_blank', 'noopener,noreferrer');
-}
-
-loadSettings();
-elements.saveSettings.addEventListener('click', saveSettings);
+readAuthCallback();
+updateAuthUi();
 elements.connectGoogle.addEventListener('click', connectGoogle);
-elements.fillDemo.addEventListener('click', () => setTemplate('inscription'));
+elements.heroConnect.addEventListener('click', connectGoogle);
+elements.authAction.addEventListener('click', connectGoogle);
 elements.generateForm.addEventListener('click', generateForm);
 document.querySelectorAll('[data-template]').forEach((button) => {
   button.addEventListener('click', () => setTemplate(button.dataset.template));

@@ -1,10 +1,11 @@
 import 'dotenv/config';
 import { z } from 'zod';
 
-const booleanFromEnv = z
-  .enum(['true', 'false'])
-  .optional()
-  .transform((value) => value === 'true');
+const booleanFromEnv = z.preprocess((value) => {
+  if (value === undefined) return false;
+  if (typeof value === 'boolean') return value;
+  return value === 'true';
+}, z.boolean());
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
@@ -14,6 +15,7 @@ const envSchema = z.object({
   GOOGLE_REDIRECT_URI: z.string().url(),
   SQLITE_PATH: z.string().default('./formai.sqlite'),
   APP_BASE_URL: z.string().url().default('http://localhost:3000'),
+  FRONTEND_URL: z.string().url().default('http://localhost:5173'),
   MOCK_EXTERNAL_APIS: booleanFromEnv.default(false),
 });
 
