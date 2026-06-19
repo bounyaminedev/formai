@@ -4,7 +4,7 @@ API backend Node.js + TypeScript + Express qui transforme une description en lan
 
 ## Fonctionnalités
 
-- OAuth Google avec scopes minimaux `forms.body` et `drive.file`.
+- OAuth Google avec scopes `forms.body`, `drive.file` et `userinfo.email` (uniquement pour associer les tokens à l’email utilisateur du MVP).
 - Stockage SQLite des tokens OAuth par email utilisateur.
 - Génération de structure via Gemini `gemini-2.5-flash-lite` avec validation Zod.
 - Retry Gemini sur 429 avec backoff exponentiel 1s, 2s, 4s.
@@ -55,7 +55,7 @@ Variables disponibles :
 curl -i http://localhost:3000/auth/google
 ```
 
-2. Suivre la redirection dans un navigateur, accepter les scopes, puis récupérer le `userId` retourné par `/auth/google/callback`.
+2. Suivre la redirection dans un navigateur, accepter les scopes Google Forms, Drive et email, puis récupérer le `userId` retourné par `/auth/google/callback`.
 
 3. Générer un formulaire :
 

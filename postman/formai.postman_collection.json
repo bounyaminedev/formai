@@ -1,1 +1,56 @@
-{"info":{"name":"FormAI MVP","schema":"https://schema.getpostman.com/json/collection/v2.1.0/collection.json"},"variable":[{"key":"baseUrl","value":"http://localhost:3000"},{"key":"userId","value":"you@example.com"}],"item":[{"name":"Health","request":{"method":"GET","url":"{{baseUrl}}/health"}},{"name":"OAuth Google","request":{"method":"GET","url":"{{baseUrl}}/auth/google"}},{"name":"Generate - inscription","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"url":"{{baseUrl}}/forms/generate","body":{"mode":"raw","raw":"{\"userId\":\"{{userId}}\",\"description\":\"Crée un formulaire d'inscription pour un atelier TypeScript avec nom, email, niveau, préférences horaires et commentaires.\"}"}}},{"name":"Generate - satisfaction","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"url":"{{baseUrl}}/forms/generate","body":{"mode":"raw","raw":"{\"userId\":\"{{userId}}\",\"description\":\"Crée un sondage de satisfaction client avec note globale, points forts, axes d'amélioration et autorisation de recontact.\"}"}}},{"name":"Generate - événement","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"url":"{{baseUrl}}/forms/generate","body":{"mode":"raw","raw":"{\"userId\":\"{{userId}}\",\"description\":\"Crée un questionnaire pour organiser un événement d'équipe: disponibilités, régime alimentaire, activité préférée, taille de groupe et commentaires.\"}"}}}]}
+{
+  "info": {
+    "name": "FormAI MVP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "userId", "value": "you@example.com" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": { "method": "GET", "url": "{{baseUrl}}/health" }
+    },
+    {
+      "name": "OAuth Google",
+      "request": { "method": "GET", "url": "{{baseUrl}}/auth/google" }
+    },
+    {
+      "name": "Generate - inscription",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/forms/generate",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\":\"{{userId}}\",\"description\":\"Crée un formulaire d'inscription pour un atelier TypeScript avec nom, email, niveau, préférences horaires et commentaires.\"}"
+        }
+      }
+    },
+    {
+      "name": "Generate - satisfaction",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/forms/generate",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\":\"{{userId}}\",\"description\":\"Crée un sondage de satisfaction client avec note globale, points forts, axes d'amélioration et autorisation de recontact.\"}"
+        }
+      }
+    },
+    {
+      "name": "Generate - événement",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/forms/generate",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\":\"{{userId}}\",\"description\":\"Crée un questionnaire pour organiser un événement d'équipe: disponibilités, régime alimentaire, activité préférée, taille de groupe et commentaires.\"}"
+        }
+      }
+    }
+  ]
+}
