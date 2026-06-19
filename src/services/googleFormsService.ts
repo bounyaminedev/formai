@@ -1,6 +1,8 @@
 import { forms_v1, google } from 'googleapis';
 import type { OAuth2Client } from 'google-auth-library';
+import { env } from '../config/env.js';
 import type { GeneratedForm } from '../types/formSchema.js';
+import { createMockFormResponse } from './mockServices.js';
 import { logger } from '../utils/logger.js';
 
 const BATCH_SIZE = 50;
@@ -49,7 +51,16 @@ function createQuestionRequest(question: GeneratedForm['questions'][number], ind
   };
 }
 
-export async function createGoogleForm(auth: OAuth2Client, structure: GeneratedForm) {
+export async function createGoogleForm(auth: OAuth2Client | null, structure: GeneratedForm) {
+  if (env.MOCK_EXTERNAL_APIS) {
+    logger.info({ title: structure.title }, 'Using mock Google Forms response');
+    return createMockFormResponse(structure);
+  }
+
+  if (!auth) {
+    throw new Error('Google auth client is required when MOCK_EXTERNAL_APIS=false');
+  }
+
   const forms = google.forms({ version: 'v1', auth });
   logger.info({ title: structure.title, questions: structure.questions.length }, 'Creating Google Form');
 

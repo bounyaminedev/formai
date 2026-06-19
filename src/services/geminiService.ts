@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { env } from '../config/env.js';
 import { incrementGeminiUsage } from '../db/geminiUsageRepository.js';
+import { generateMockFormStructure } from './mockServices.js';
 import { generatedFormSchema, type GeneratedForm } from '../types/formSchema.js';
 import { logger } from '../utils/logger.js';
 
@@ -28,6 +29,11 @@ async function callGemini(prompt: string): Promise<string> {
 }
 
 export async function generateFormStructure(description: string): Promise<GeneratedForm> {
+  if (env.MOCK_EXTERNAL_APIS) {
+    logger.info('Using mock Gemini response');
+    return generateMockFormStructure(description);
+  }
+
   let response = await callGemini(`Description utilisateur: ${description}`);
   for (let validationAttempt = 0; validationAttempt < 2; validationAttempt += 1) {
     try { return generatedFormSchema.parse(parseJson(response)); }

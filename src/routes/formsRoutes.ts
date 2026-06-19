@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
+import { env } from '../config/env.js';
 import { generateFormStructure } from '../services/geminiService.js';
 import { authorizedClientForUser } from '../services/googleAuthService.js';
 import { createGoogleForm } from '../services/googleFormsService.js';
@@ -14,7 +15,7 @@ const bodySchema = z.object({
 formsRoutes.post('/generate', async (req, res, next) => {
   try {
     const body = bodySchema.parse(req.body);
-    const auth = await authorizedClientForUser(body.userId);
+    const auth = env.MOCK_EXTERNAL_APIS ? null : await authorizedClientForUser(body.userId);
     const structure = await generateFormStructure(body.description);
     const result = await createGoogleForm(auth, structure);
 

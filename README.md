@@ -44,6 +44,18 @@ Variables disponibles :
 - `GOOGLE_REDIRECT_URI` : callback OAuth.
 - `SQLITE_PATH` : chemin de la base SQLite.
 - `APP_BASE_URL` : URL locale de l'API.
+- `MOCK_EXTERNAL_APIS` : mettre `true` pour tester `/forms/generate` sans appeler Gemini ni Google Forms.
+
+
+## Mode mock local
+
+Pour tester le pipeline HTTP sans vraies clés Google/Gemini, renseigner des valeurs factices dans `.env` et activer :
+
+```bash
+MOCK_EXTERNAL_APIS=true
+```
+
+Dans ce mode, `POST /forms/generate` ignore la vérification OAuth, retourne une structure Gemini simulée et renvoie des URLs Google Forms factices. Ce mode sert uniquement au développement local ; les tests de bout en bout réels nécessitent toujours OAuth, Gemini et Google Forms configurés.
 
 ## Tester avec curl
 
